@@ -37,3 +37,28 @@ class TextNode:
         return LeafNode('img', None, {'src': self.url, 'alt': self.text})
       case _:
         raise Exception('Invalid text type')
+      
+  def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []
+
+    for node in old_nodes:
+      split_text = node.text.split(delimiter)
+      
+      # If the string begins with a delimiter, words affected by the delimiter are in odd possitions
+      # pick the first word and start from the first not-affected word
+      if split_text[0] == '':
+        new_node = TextNode(split_text[1], text_type)
+        new_nodes.append(new_node)
+        split_text = split_text[2:]
+
+      # If the last character is an empty string, ignore it
+      if split_text[-1] == '':
+        split_text = split_text[0:-1]
+
+      # otherwise, the words affected by the delimiter are in even possitions, start from the beginning
+      for i in range(0, len(split_text)):
+        new_node = TextNode(split_text[i], node.text_type if i % 2 == 0 else text_type)
+        new_nodes.append(new_node)
+      
+    return new_nodes
+      
