@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 from leafnode import LeafNode
 
 class TextType(Enum):
@@ -61,4 +62,3 @@ class TextNode:
         new_nodes.append(new_node)
       
     return new_nodes
-      

@@ -58,7 +58,7 @@ class TestTextNode(unittest.TestCase):
   def test_single_node_to_code(self):
     node = TextNode("This is text with a `code block` word", TextType.NORMAL)
     new_nodes = TextNode.split_nodes_delimiter([node], "`", TextType.CODE)
-    self.assertEqual(new_nodes, [
+    self.assertListEqual(new_nodes, [
       TextNode("This is text with a ", TextType.NORMAL),
       TextNode("code block", TextType.CODE),
       TextNode(" word", TextType.NORMAL)
@@ -69,7 +69,7 @@ class TestTextNode(unittest.TestCase):
     new_nodes = TextNode.split_nodes_delimiter([node], "**", TextType.BOLD)
     new_nodes = TextNode.split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
 
-    self.assertEqual(new_nodes, [
+    self.assertListEqual(new_nodes, [
       TextNode("Normal ", TextType.NORMAL),
       TextNode("bold txt", TextType.BOLD),
       TextNode(" normal ", TextType.NORMAL),
@@ -80,7 +80,7 @@ class TestTextNode(unittest.TestCase):
   def test_single_node_starts_and_ends_delimited(self):
     node = TextNode("_italic txt_ normal _italic_", TextType.NORMAL)
     new_nodes = TextNode.split_nodes_delimiter([node], "_", TextType.ITALIC)
-    self.assertEqual(new_nodes, [
+    self.assertListEqual(new_nodes, [
       TextNode("italic txt", TextType.ITALIC),
       TextNode(" normal ", TextType.NORMAL),
       TextNode("italic", TextType.ITALIC)
@@ -90,7 +90,7 @@ class TestTextNode(unittest.TestCase):
     node1 = TextNode("Text _italic_ text", TextType.NORMAL)
     node2 = TextNode("Text2 _italic2_ text2", TextType.NORMAL)
     new_nodes = TextNode.split_nodes_delimiter([node1, node2], "_", TextType.ITALIC)
-    self.assertEqual(new_nodes, [
+    self.assertListEqual(new_nodes, [
       TextNode("Text ", TextType.NORMAL),
       TextNode("italic", TextType.ITALIC),
       TextNode(" text", TextType.NORMAL),
