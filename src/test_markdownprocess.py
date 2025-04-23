@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from textnodeutils import *
+from markdownprocess import *
 
 class TestTextNodeUtils(unittest.TestCase):
 
@@ -91,3 +91,63 @@ class TestTextNodeUtils(unittest.TestCase):
       ],
       node_list
     )
+
+  def test_markdown_to_blocks(self):
+    md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+    blocks = markdown_to_blocks(md)
+    self.assertEqual(
+        blocks,
+        [
+            "This is **bolded** paragraph",
+            "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+            "- This is a list\n- with items",
+        ],
+    )
+
+  def test_block_to_block_type(self):
+    blocks = [
+      '# This is a heading',
+      '### Also a heading',
+      'This is a paragraph of text. It has some **bold** and _italic_ words inside of it.',
+      '- This is the first list item in a list block\n- This is a list item\n- This is another list item',
+      '>This is a quote\n> With multiple paragraphs',
+      '- Multiple things\n>Make a normal\nparagraph',
+      '1. Ordered 1\n2. Ordered 2\n3. Ordered 3',
+      '1. Ordered 1\n2. Ordered 2 3. Ordered 3',
+      '```Code here\n and here\n1. here```']
+    
+    heading_type = block_to_block_type(blocks[0])
+    self.assertEqual(BlockType.HEADING, heading_type)
+
+    heading_type2 = block_to_block_type(blocks[1])
+    self.assertEqual(BlockType.HEADING, heading_type2)
+
+    paragraph_type = block_to_block_type(blocks[2])
+    self.assertEqual(BlockType.PARAGRAPH, paragraph_type)
+
+    unordered_type = block_to_block_type(blocks[3])
+    self.assertEqual(BlockType.UNORDERED_LIST, unordered_type)
+
+    quote_type = block_to_block_type(blocks[4])
+    self.assertEqual(BlockType.QUOTE, quote_type)
+
+    paragraph_type2 = block_to_block_type(blocks[5])
+    self.assertEqual(BlockType.PARAGRAPH, paragraph_type2)
+
+    ordered_type = block_to_block_type(blocks[6])
+    self.assertEqual(BlockType.ORDERED_LIST, ordered_type)
+
+    ordered_type2 = block_to_block_type(blocks[7])
+    self.assertEqual(BlockType.ORDERED_LIST, ordered_type2)
+
+    code_type = block_to_block_type(blocks[8])
+    self.assertEqual(BlockType.CODE, code_type)
+
