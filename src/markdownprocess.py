@@ -51,35 +51,13 @@ def lines_startwith_pattern(block, pattern):
   
   return result
 
-def block_type_to_tag(block_type):
-  match(block_type):
-    case BlockType.PARAGRAPH:
-      return 'p'
-    case BlockType.HEADING:
-      return 'header'
-    case BlockType.CODE:
-      return 'code'
-    case BlockType.QUOTE:
-      return 'blockquote'
-    case BlockType.UNORDERED_LIST:
-      return 'ul'
-    case BlockType.ORDERED_LIST:
-      return 'ol'
-    case _:
-      raise ValueError('Invalid BlockType value')
-
 def text_to_children(block):
   text_nodes = text_to_textnodes(block)
   html_nodes = []
 
   for node in text_nodes:
     html_nodes.append(node.to_html_node())
-  return html_nodes
-
-def block_to_html(block, block_type):
-  html_nodes = text_to_children(block)
-  tag = block_type_to_tag(block_type)
-  return ParentNode(tag, html_nodes)    
+  return html_nodes 
 
 #endregion
 
@@ -110,9 +88,7 @@ def text_to_textnodes(text):
   list:
     A list of TextNode instances
   """
-  lines = text.split("\n")
-  paragraph = " ".join(lines)
-  initial_node = TextNode(paragraph, TextType.NORMAL)
+  initial_node = TextNode(text, TextType.NORMAL)
   nodes_delimiter_b = TextNode.split_nodes_delimiter([initial_node], '**', TextType.BOLD)
   nodes_delimiter_bi = TextNode.split_nodes_delimiter(nodes_delimiter_b, '_', TextType.ITALIC)
   nodes_delimiter_bic = TextNode.split_nodes_delimiter(nodes_delimiter_bi, '`', TextType.CODE)
@@ -191,21 +167,11 @@ def block_to_html_node(block):
         return quote_to_html_node(block)
     raise ValueError("invalid block type")
 
-def text_to_children(text):
-    text_nodes = text_to_textnodes(text)
-    children = []
-    for text_node in text_nodes:
-        html_node = text_node.to_html_node()
-        children.append(html_node)
-    return children
-
-
 def paragraph_to_html_node(block):
     lines = block.split("\n")
     paragraph = " ".join(lines)
-    children = text_to_children(paragraph)
-    return ParentNode("p", children)
-
+    html_nodes = text_to_children(paragraph)
+    return ParentNode('p', html_nodes)   
 
 def heading_to_html_node(block):
     level = 0
