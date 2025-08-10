@@ -6,6 +6,14 @@ class HTMLNode:
     self.props = props
   
   def to_html(self):
+    """
+    Transform the object into its HTML representation
+
+    Returns
+    -------
+    str
+      An HTML string representation of the node
+    """
     raise NotImplementedError()
   
   def props_to_html(self):

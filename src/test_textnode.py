@@ -98,6 +98,13 @@ class TestTextNode(unittest.TestCase):
       TextNode("italic2", TextType.ITALIC),
       TextNode(" text2", TextType.NORMAL)
     ])
+
+  def test_single_node_no_delimiter(self):
+    node = TextNode("Normal txt normal italic normal", TextType.NORMAL)
+    new_nodes = TextNode.split_nodes_delimiter([node], "**", TextType.BOLD)
+    new_nodes = TextNode.split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+
+    self.assertListEqual(new_nodes, [TextNode("Normal txt normal italic normal", TextType.NORMAL)])
   
   #endregion
 
