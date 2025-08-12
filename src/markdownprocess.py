@@ -240,7 +240,7 @@ def extract_title(markdown):
   else:
      return result.lstrip('# ')
   
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, base_path):
   print(f'Generating page from {from_path} to {dest_path} using {template_path}')
   file = open(from_path, "r")
   md = file.read()
@@ -255,6 +255,8 @@ def generate_page(from_path, template_path, dest_path):
   html_string = parentNode.to_html()
   template = template.replace('{{ Title }}', title)
   template = template.replace('{{ Content }}', html_string)
+  template = template.replace('href="/', f'href="{base_path}')
+  template = template.replace('src="/', f'src="{base_path}')
 
   dest = open(dest_path, "x")
   dest.write(template)
