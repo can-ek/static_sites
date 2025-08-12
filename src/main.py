@@ -1,6 +1,7 @@
 from textnode import *
 from htmlnode import HTMLNode
 from leafnode import LeafNode
+from markdownprocess import generate_page
 import shutil
 import os
 
@@ -27,16 +28,23 @@ def copy_to_public():
     print(f'Removed contents and created path for {public_path}')
   copy_dir(static_path, public_path)
 
-  
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+  print(f'Reading contents in {dir_path_content}')
+  contents = os.listdir(dir_path_content)
+  for sub_path in contents:
+    new_src = os.path.join(dir_path_content, sub_path)
+    if os.path.isdir(new_src):
+      new_dest = os.path.join(dest_dir_path, sub_path)
+      os.mkdir(new_dest)
+      print(f'Created new directory {new_dest}')
+      generate_pages_recursive(new_src, template_path, new_dest)
+    else:
+      new_dest = os.path.join(dest_dir_path, 'index.html')
+      generate_page(new_src, template_path, new_dest)
+      print(f'Generated new page from {new_src} to {new_dest}')
 
 def main():
-  node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-  print(node)
-
-  html_node = HTMLNode('p', 'paragraph', [], {"href": "https://www.google.com", "target": "_blank"})
-  print(html_node)
-
-  print(LeafNode("p", "This is a paragraph of text.").to_html())
   copy_to_public()
+  generate_pages_recursive('./content', './template.html', './public')
 
 main()

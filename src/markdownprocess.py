@@ -227,3 +227,38 @@ def quote_to_html_node(block):
     content = " ".join(new_lines)
     children = text_to_children(content)
     return ParentNode("blockquote", children)
+
+  
+def extract_title(markdown):
+  blocks = markdown_to_blocks(markdown)
+  result = ''
+  for block in blocks:
+     if block.startswith('# '):
+        result = block
+  if result == '':
+     raise Exception('No title found')
+  else:
+     return result.lstrip('# ')
+  
+def generate_page(from_path, template_path, dest_path):
+  print(f'Generating page from {from_path} to {dest_path} using {template_path}')
+  file = open(from_path, "r")
+  md = file.read()
+  file.close()
+
+  file = open(template_path, "r")
+  template = file.read()
+  file.close()
+
+  title = extract_title(md)
+  parentNode = markdown_to_html_node(md)
+  html_string = parentNode.to_html()
+  template = template.replace('{{ Title }}', title)
+  template = template.replace('{{ Content }}', html_string)
+
+  dest = open(dest_path, "x")
+  dest.write(template)
+  dest.close()
+
+
+   

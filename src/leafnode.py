@@ -29,8 +29,8 @@ class LeafNode(HTMLNode):
     ValueError
       If the node doesn't have a value
     """
-    if not self.value:
+    if self.value is None:
       raise ValueError("Missing value")
-    if not self.tag:
+    if self.tag is None:
       return self.value
     return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
